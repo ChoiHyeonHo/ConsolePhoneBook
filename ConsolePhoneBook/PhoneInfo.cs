@@ -55,10 +55,11 @@ namespace ConsolePhoneBook
     public class PhoneUnivInfo : PhoneInfo
     {
         public string major;
-        public string Major { get; set; }
+        public string Major { get; }
 
         public int year;
-        public int Year { get; set; }
+        public int Year { get; }
+
 
         public PhoneUnivInfo(string name, string phoneNumber, string birth, string major, int year) : base(name, phoneNumber, birth)
         {
@@ -66,23 +67,27 @@ namespace ConsolePhoneBook
             this.year = year; //필수
         }
 
-        public override void ShowPhoneInfo()
-        {
-            Console.WriteLine( $"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 학과: {major} \t 학년: {year}");
-        }
 
         //showphoneinfo 오버라이딩
-       //public override string ToString()
-       //{
-       //    return $"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 학과: {major} \t 학년: {year}";
-       //}
+        public override void ShowPhoneInfo()
+        {
+            Console.WriteLine($"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 학과: {major} \t 학년: {year}");
+        }
     }
 
     public class PhoneCompanyInfo : PhoneInfo
     {
-        public PhoneCompanyInfo(string name, string phoneNumber, string birth) : base(name, phoneNumber, birth)
+        string company;
+        public PhoneCompanyInfo(string name, string phoneNumber, string birth, string company) : base( name, phoneNumber, birth)
         {
-            string company;
+            this.company = company;
+        }
+
+        public string Company { get; set; }
+
+        public override void ShowPhoneInfo()
+        {
+            Console.WriteLine($"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 회사: {company}");
         }
     }
 }

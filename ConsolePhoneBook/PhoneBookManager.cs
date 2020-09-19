@@ -11,7 +11,7 @@ namespace ConsolePhoneBook
         const int MAX_CNT = 100;
         PhoneInfo[] infoStorage = new PhoneInfo[MAX_CNT];
         int curCnt = 0;
-        
+
         public void ShowMenu()
         {
             Console.WriteLine("------------------------------ 주소록 ----------------------------");
@@ -22,13 +22,14 @@ namespace ConsolePhoneBook
 
         public void InputData() // 1. 입력
         {
-            Console.WriteLine("1. 일반\t 2. 대학\t 3. 회사");
-            Console.Write("선택: "); //추가해야할 것. ☆
+            Console.WriteLine("1. 일반 \t 2. 대학 \t 3. 회사");
+            Console.Write("선택: ");
             int choice = int.Parse(Console.ReadLine());
 
             Console.Write("이름 입력: "); //Trimstart()문자열의 시작점, Trimend 문자열의 끝의 공백 제거, Replace(" ","") 스페이스 하나를 빈 문자열로 바꾼다.
             string name = Console.ReadLine().Trim().Replace(" ", "");
             // = if (name.Equals("")) // = if (name.Length < 1) // = if(name == "")
+            
             if (string.IsNullOrEmpty(name))
             {
                 Console.WriteLine("이름은 필수 입력입니다.");
@@ -80,8 +81,21 @@ namespace ConsolePhoneBook
                     Console.WriteLine("학과는 필수 입력입니다.");
                     return;
                 }
-                infoStorage[curCnt++] = new PhoneUnivInfo(name, phone, birth, major,Convert.ToInt32(year));
+                infoStorage[curCnt++] = new PhoneUnivInfo(name, phone, birth, major, Convert.ToInt32(year));
             }
+            else if (choice == 3)
+            {
+                Console.Write("회사 입력: ");
+                string company = Console.ReadLine().Trim();
+                if (string.IsNullOrEmpty(company))
+                {
+                    Console.WriteLine("회사명은 필수 입력입니다.");
+                    return;
+                }
+                else
+                    infoStorage[curCnt++] = new PhoneCompanyInfo(name, phone, birth, company);
+            }
+
         }
 
         public void ListData() // 2. 목록
@@ -96,7 +110,6 @@ namespace ConsolePhoneBook
             for (int i = 0; i < curCnt; i++)
             {
                 Console.Write($"{cnt}. ");
-                //infoStorage[i].ShowPhoneInfo();
                 infoStorage[i].ShowPhoneInfo();
                 ++cnt;
             }
@@ -136,7 +149,7 @@ namespace ConsolePhoneBook
         {
             for (int i = 0; i < curCnt; i++)
             {
-                if (infoStorage[i].Name.Replace(" ", "").CompareTo(name) == 0) // == , Equals(), CompareTo()
+                if (infoStorage[i].Name.Replace(" ", "").Equals(name)) // == , Equals(), CompareTo()
                 {
                     return i;
                 }
