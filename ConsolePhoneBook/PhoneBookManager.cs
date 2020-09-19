@@ -97,7 +97,7 @@ namespace ConsolePhoneBook
             {
                 Console.Write($"{cnt}. ");
                 //infoStorage[i].ShowPhoneInfo();
-                Console.WriteLine(infoStorage[i].ToString());
+                infoStorage[i].ShowPhoneInfo();
                 ++cnt;
             }
             Console.WriteLine();

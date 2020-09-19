@@ -65,11 +65,17 @@ namespace ConsolePhoneBook
             this.major = major; //필수
             this.year = year; //필수
         }
-        //showphoneinfo 오버라이딩
-        public override string ToString()
+
+        public override void ShowPhoneInfo()
         {
-            return $"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 학과: {major} \t 학년: {year}";
+            Console.WriteLine( $"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 학과: {major} \t 학년: {year}");
         }
+
+        //showphoneinfo 오버라이딩
+       //public override string ToString()
+       //{
+       //    return $"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 학과: {major} \t 학년: {year}";
+       //}
     }
 
     public class PhoneCompanyInfo : PhoneInfo
