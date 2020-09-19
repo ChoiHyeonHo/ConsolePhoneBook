@@ -42,7 +42,7 @@ namespace ConsolePhoneBook
             this.birth = birth;
         }
 
-        public virtual void ShowPhoneInfo() //정보 출력, 상속시켜서 학교,회사명 등 넣기
+        public virtual void ShowPhoneInfo()//정보 출력, 상속시켜서 학교,회사명 등 넣기
         {
             if (birth != null)
                 Console.WriteLine($"이름: {this.name} \t 번호: {this.phoneNumber} \t 생일: {this.birth}");
@@ -54,13 +54,13 @@ namespace ConsolePhoneBook
 
     public class PhoneUnivInfo : PhoneInfo
     {
-        string major;
-        public string Major { get; }
+        public string major;
+        public string Major { get; set; }
 
-        string year;
-        public string Year { get; }
+        public int year;
+        public int Year { get; set; }
 
-        public PhoneUnivInfo(string name, string phoneNumber, string birth, string major, string year) : base(name, phoneNumber, birth)
+        public PhoneUnivInfo(string name, string phoneNumber, string birth, string major, int year) : base(name, phoneNumber, birth)
         {
             this.major = major; //필수
             this.year = year; //필수

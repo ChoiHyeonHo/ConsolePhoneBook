@@ -80,7 +80,7 @@ namespace ConsolePhoneBook
                     Console.WriteLine("학과는 필수 입력입니다.");
                     return;
                 }
-                infoStorage[curCnt++] = new PhoneUnivInfo(name, phone, birth, major, year);
+                infoStorage[curCnt++] = new PhoneUnivInfo(name, phone, birth, major,Convert.ToInt32(year));
             }
         }
 
@@ -97,12 +97,12 @@ namespace ConsolePhoneBook
             {
                 Console.Write($"{cnt}. ");
                 //infoStorage[i].ShowPhoneInfo();
-                infoStorage[i].ToString();
+                Console.WriteLine(infoStorage[i].ToString());
                 ++cnt;
             }
             Console.WriteLine();
         }
-        // 37.2
+
         public void SearchData() // 3. 검색
         {
             Console.WriteLine("주소록 검색을 시작합니다.");
