@@ -28,7 +28,7 @@ namespace ConsolePhoneBook
         const int MAX_CNT = 100;
         PhoneInfo[] infoStorage = new PhoneInfo[MAX_CNT];
         int curCnt = 0;
-        string errmassage = "정보가 없거나 미흡합니다.";
+        string errmessage = "정보가 없거나 미흡합니다. 다시 확인해 주세요.";
 
         public void ShowMenu()
         {
@@ -43,6 +43,7 @@ namespace ConsolePhoneBook
             Console.WriteLine("1.일반  2.대학  3.회사");
             Console.Write("선택 >> ");
             int choice;
+
             while (true)
             {
                 if (int.TryParse(Console.ReadLine(), out choice))
@@ -77,9 +78,10 @@ namespace ConsolePhoneBook
         private string[] InputCommonInfo()
         {
             Console.Write("이름: ");
-            string name = Console.ReadLine().Trim();//if (name == "") or if (name.Length < 1) or if (name.Equals(""))
+            string name;//if (name == "") or if (name.Length < 1) or if (name.Equals(""))
             try
             {
+                name = Console.ReadLine().Trim();
                 if (string.IsNullOrEmpty(name))
                 {
                     Console.WriteLine("이름은 필수입력입니다");
@@ -95,35 +97,43 @@ namespace ConsolePhoneBook
                     }
                 }
             }
-            catch(Exception err)
+            catch (Exception err)
             {
-                Console.WriteLine(err.Message);
+                throw new Exception(err.Message);
             }
 
             Console.Write("전화번호: ");
-            string phone = Console.ReadLine().Trim();
-            if (string.IsNullOrEmpty(phone))
-            {
-                Console.WriteLine("전화번호는 필수입력입니다");
-                return null;
-            }
-
-            Console.Write("생일: ");
-            string birth = Console.ReadLine().Trim();
-
+            string phone;
+            string birth;
             string[] arr = new string[3];
-            arr[0] = name;
-            arr[1] = phone;
-            arr[2] = birth;
+            try
+            {
+                phone = Console.ReadLine().Trim();
+                if (string.IsNullOrEmpty(phone))
+                {
+                    Console.WriteLine("전화번호는 필수입력입니다");
+                    return null;
+                }
+                Console.Write("생일: ");
+                birth = Console.ReadLine().Trim();
 
-            return arr;
-        } 
+                arr[0] = name;
+                arr[1] = phone;
+                arr[2] = birth;
+
+                return arr;
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
+        }
 
         private PhoneInfo InputFriendInfo()
         {
             string[] comInfo = InputCommonInfo();
             if (comInfo == null || comInfo.Length != 3)
-                throw new Exception(errmassage);
+                throw new Exception(errmessage);
 
             return new PhoneInfo(comInfo[0], comInfo[1], comInfo[2]);
         }
@@ -132,27 +142,43 @@ namespace ConsolePhoneBook
         {
             string[] comInfo = InputCommonInfo();
             if (comInfo == null || comInfo.Length != 3)
-                throw new Exception(errmassage);
+                throw new Exception(errmessage);
 
-            Console.Write("전공: ");
-            string major = Console.ReadLine().Trim();
+            string major;
+            int year;
+            try
+            {
+                Console.Write("전공: ");
+                major = Console.ReadLine().Trim();
 
-            Console.Write("학년: ");
-            int year = int.Parse(Console.ReadLine().Trim());
+                Console.Write("학년: ");
+                year = int.Parse(Console.ReadLine().Trim());
 
-            return new PhoneUnivInfo(comInfo[0], comInfo[1], comInfo[2], major, year);
+                return new PhoneUnivInfo(comInfo[0], comInfo[1], comInfo[2], major, year);
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
         }
 
         private PhoneInfo InputCompanyInfo()
         {
             string[] comInfo = InputCommonInfo();
             if (comInfo == null || comInfo.Length != 3)
-                throw new Exception(errmassage);
+                throw new Exception(errmessage);
+            string company;
+            try
+            {
+                Console.Write("회사명: ");
+                company = Console.ReadLine().Trim();
 
-            Console.Write("회사명: ");
-            string company = Console.ReadLine().Trim();
-
-            return new PhoneCompanyInfo(comInfo[0], comInfo[1], comInfo[2], company);
+                return new PhoneCompanyInfo(comInfo[0], comInfo[1], comInfo[2], company);
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
         }
 
         public void ListData()
@@ -177,7 +203,7 @@ namespace ConsolePhoneBook
             }
             catch
             {
-                throw new Exception(errmassage);
+                throw new Exception("1~4까지의 숫자로 입력해 주세요.");
             }
         }
 
@@ -187,42 +213,42 @@ namespace ConsolePhoneBook
             {
                 Console.WriteLine("1.이름(오름)  2.이름(내림)  3.전화번호(오름)  4.전화번호 (내림)");
                 Console.Write("선택 : ");
-                int pick;
+
+                int pick = 0;
                 PhoneInfo[] new_arr;
 
-                try
-                {
-                    pick = int.Parse(Console.ReadLine());
-                    new_arr = new PhoneInfo[curCnt];
-                    Array.Copy(infoStorage, new_arr, curCnt);
-                    if (pick == 1)
-                    {
-                        Array.Sort(new_arr);
-                    }
-                    else if (pick == 2)
-                    {
-                        Array.Sort(new_arr);
-                        Array.Reverse(new_arr);
-                    }
-                    else if (pick == 3)
-                    {
-                        Array.Sort(new_arr, new PhoneComparator());
-                    }
-                    else if (pick == 4)
-                    {
-                        Array.Sort(new_arr, new PhoneComparator());
-                        Array.Reverse(new_arr);
-                    }
 
-                    for (int i = 0; i < curCnt; i++)
-                    {
-                        Console.WriteLine(new_arr[i].ToString());
-                    }
-                }
-                catch
+                pick = int.Parse(Console.ReadLine());
+                new_arr = new PhoneInfo[curCnt];
+                Array.Copy(infoStorage, new_arr, curCnt);
+                if (pick == 1)
                 {
-                    Console.WriteLine("1~4 의 숫자 중에서 선택하여 주세요.");
+                    Array.Sort(new_arr);
                 }
+                else if (pick == 2)
+                {
+                    Array.Sort(new_arr);
+                    Array.Reverse(new_arr);
+                }
+                else if (pick == 3)
+                {
+                    Array.Sort(new_arr, new PhoneComparator());
+                }
+                else if (pick == 4)
+                {
+                    Array.Sort(new_arr, new PhoneComparator());
+                    Array.Reverse(new_arr);
+                }
+                if (pick > 4 || pick <= 0)
+                {
+                    throw new Exception();
+                }
+
+                for (int i = 0; i < curCnt; i++)
+                {
+                    Console.WriteLine(new_arr[i].ToString());
+                }
+
             }
         }
 
@@ -282,7 +308,7 @@ namespace ConsolePhoneBook
             }
             catch
             {
-                throw new Exception(errmassage);
+                throw new Exception(errmessage);
             }
         }
 
@@ -322,7 +348,7 @@ namespace ConsolePhoneBook
             }
             catch
             {
-                throw new Exception(errmassage);
+                throw new Exception(errmessage);
             }
         }
     }

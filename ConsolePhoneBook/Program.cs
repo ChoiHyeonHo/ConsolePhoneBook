@@ -15,10 +15,16 @@ namespace ConsolePhoneBook
             while (true)
             {
                 manager.ShowMenu();
-                int choice = int.Parse(Console.ReadLine());
+                int choice;
 
                 try
                 {
+                    choice = int.Parse(Console.ReadLine());
+                    if (choice > 5 || choice <= 0)
+                    {
+                        throw new Exception("1~5까지의 숫자로 입력해 주세요.");
+                    }
+
                     switch (choice)
                     {
                         case 1: manager.InputData(); break;
