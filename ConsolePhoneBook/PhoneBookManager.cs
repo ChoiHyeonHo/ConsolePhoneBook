@@ -8,9 +8,27 @@ namespace ConsolePhoneBook
 {
     public class PhoneBookManager
     {
+        static PhoneBookManager instance;
+        private PhoneBookManager()
+        {
+
+        }
+
+        public static PhoneBookManager CreateInstance()
+        {
+
+            if (instance == null)
+            {
+                instance = new PhoneBookManager();
+            }
+
+            return instance;
+        }
+
         const int MAX_CNT = 100;
         PhoneInfo[] infoStorage = new PhoneInfo[MAX_CNT];
         int curCnt = 0;
+        string errmassage = "정보가 없거나 미흡합니다.";
 
         public void ShowMenu()
         {
@@ -59,21 +77,27 @@ namespace ConsolePhoneBook
         private string[] InputCommonInfo()
         {
             Console.Write("이름: ");
-            string name = Console.ReadLine().Trim();
-            //if (name == "") or if (name.Length < 1) or if (name.Equals(""))
-            if (string.IsNullOrEmpty(name))
+            string name = Console.ReadLine().Trim();//if (name == "") or if (name.Length < 1) or if (name.Equals(""))
+            try
             {
-                Console.WriteLine("이름은 필수입력입니다");
-                return null;
-            }
-            else
-            {
-                int dataIdx = SearchName(name);
-                if (dataIdx > -1)
+                if (string.IsNullOrEmpty(name))
                 {
-                    Console.WriteLine("이미 등록된 이름입니다. 다른 이름으로 입력하세요");
+                    Console.WriteLine("이름은 필수입력입니다");
                     return null;
                 }
+                else
+                {
+                    int dataIdx = SearchName(name);
+                    if (dataIdx > -1)
+                    {
+                        Console.WriteLine("이미 등록된 이름입니다. 다른 이름으로 입력하세요");
+                        return null;
+                    }
+                }
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.Message);
             }
 
             Console.Write("전화번호: ");
@@ -93,13 +117,13 @@ namespace ConsolePhoneBook
             arr[2] = birth;
 
             return arr;
-        }
+        } 
 
         private PhoneInfo InputFriendInfo()
         {
             string[] comInfo = InputCommonInfo();
             if (comInfo == null || comInfo.Length != 3)
-                return null;
+                throw new Exception(errmassage);
 
             return new PhoneInfo(comInfo[0], comInfo[1], comInfo[2]);
         }
@@ -108,7 +132,7 @@ namespace ConsolePhoneBook
         {
             string[] comInfo = InputCommonInfo();
             if (comInfo == null || comInfo.Length != 3)
-                return null;
+                throw new Exception(errmassage);
 
             Console.Write("전공: ");
             string major = Console.ReadLine().Trim();
@@ -123,7 +147,7 @@ namespace ConsolePhoneBook
         {
             string[] comInfo = InputCommonInfo();
             if (comInfo == null || comInfo.Length != 3)
-                return null;
+                throw new Exception(errmassage);
 
             Console.Write("회사명: ");
             string company = Console.ReadLine().Trim();
@@ -144,8 +168,17 @@ namespace ConsolePhoneBook
                 Console.WriteLine(infoStorage[i].ToString());
             }
             Console.WriteLine("정렬하시겠습니까? (예: 1 / 아니오: 2)");
-            int lineUp = int.Parse(Console.ReadLine());
-            LineUp(lineUp);
+            int lineUp;
+
+            try
+            {
+                lineUp = int.Parse(Console.ReadLine());
+                LineUp(lineUp);
+            }
+            catch
+            {
+                throw new Exception(errmassage);
+            }
         }
 
         private void LineUp(int lineUp)
@@ -154,37 +187,43 @@ namespace ConsolePhoneBook
             {
                 Console.WriteLine("1.이름(오름)  2.이름(내림)  3.전화번호(오름)  4.전화번호 (내림)");
                 Console.Write("선택 : ");
+                int pick;
+                PhoneInfo[] new_arr;
 
-                int pick = int.Parse(Console.ReadLine());
-                PhoneInfo[] new_arr = new PhoneInfo[curCnt];
-                Array.Copy(infoStorage, new_arr, curCnt);
+                try
+                {
+                    pick = int.Parse(Console.ReadLine());
+                    new_arr = new PhoneInfo[curCnt];
+                    Array.Copy(infoStorage, new_arr, curCnt);
+                    if (pick == 1)
+                    {
+                        Array.Sort(new_arr);
+                    }
+                    else if (pick == 2)
+                    {
+                        Array.Sort(new_arr);
+                        Array.Reverse(new_arr);
+                    }
+                    else if (pick == 3)
+                    {
+                        Array.Sort(new_arr, new PhoneComparator());
+                    }
+                    else if (pick == 4)
+                    {
+                        Array.Sort(new_arr, new PhoneComparator());
+                        Array.Reverse(new_arr);
+                    }
 
-                if (pick == 1)
-                {
-                    Array.Sort(new_arr);
+                    for (int i = 0; i < curCnt; i++)
+                    {
+                        Console.WriteLine(new_arr[i].ToString());
+                    }
                 }
-                else if (pick == 2)
+                catch
                 {
-                    Array.Sort(new_arr);
-                    Array.Reverse(new_arr);
-                }
-                else if (pick == 3)
-                {
-                    Array.Sort(new_arr, new PhoneComparator());
-                }
-                else if (pick == 4)
-                {
-                    Array.Sort(new_arr, new PhoneComparator());
-                    Array.Reverse(new_arr);
-                }
-
-                for (int i = 0; i < curCnt; i++)
-                {
-                    Console.WriteLine(new_arr[i].ToString());
+                    Console.WriteLine("1~4 의 숫자 중에서 선택하여 주세요.");
                 }
             }
-            else
-            { return; }
         }
 
         public void SearchData()
@@ -225,18 +264,26 @@ namespace ConsolePhoneBook
 
         private int SearchName()
         {
-            Console.Write("이름: ");
-            string name = Console.ReadLine().Trim().Replace(" ", "");
-
-            for (int i = 0; i < curCnt; i++)
+            string name;
+            try
             {
-                if (infoStorage[i].Name.Replace(" ", "").CompareTo(name) == 0)
-                {
-                    return i;
-                }
-            }
+                Console.Write("이름: ");
+                name = Console.ReadLine().Trim().Replace(" ", "");
 
-            return -1;
+                for (int i = 0; i < curCnt; i++)
+                {
+                    if (infoStorage[i].Name.Replace(" ", "").CompareTo(name) == 0)
+                    {
+                        return i;
+                    }
+                }
+
+                return -1;
+            }
+            catch
+            {
+                throw new Exception(errmassage);
+            }
         }
 
         private int SearchName(string name)
@@ -254,21 +301,28 @@ namespace ConsolePhoneBook
 
         public void DeleteData()
         {
-            Console.WriteLine("주소록 삭제를 시작합니다......");
+            try
+            {
+                Console.WriteLine("주소록 삭제를 시작합니다......");
 
-            int dataIdx = SearchName();
-            if (dataIdx < 0)
-            {
-                Console.WriteLine("삭제할 데이터가 없습니다");
-            }
-            else
-            {
-                for (int i = dataIdx; i < curCnt; i++)
+                int dataIdx = SearchName();
+                if (dataIdx < 0)
                 {
-                    infoStorage[i] = infoStorage[i + 1];
+                    Console.WriteLine("삭제할 데이터가 없습니다");
                 }
-                curCnt--;
-                Console.WriteLine("주소록 삭제가 완료되었습니다");
+                else
+                {
+                    for (int i = dataIdx; i < curCnt; i++)
+                    {
+                        infoStorage[i] = infoStorage[i + 1];
+                    }
+                    curCnt--;
+                    Console.WriteLine("주소록 삭제가 완료되었습니다");
+                }
+            }
+            catch
+            {
+                throw new Exception(errmassage);
             }
         }
     }
