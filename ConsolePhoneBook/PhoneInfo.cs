@@ -1,31 +1,27 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsolePhoneBook
 {
-    public class PhoneInfo
+    public class PhoneInfo : IComparable
     {
-        private string name; //필수
-        private string phoneNumber; //필수
-        private string birth; //선택
+        string name;   //필수
+        string phoneNumber;  //필수
+        string birth;  //선택
 
-        public string Name 
+        public string Name
         {
-            get { return name; } 
-            set { name = value; }
+            get { return name; }
         }
-        public string PhoneNumber
+
+        public string Phone
         {
             get { return phoneNumber; }
-            set { phoneNumber = value; }
-        }
-        public string Birth
-        {
-            get { return birth; }
-            set { birth = value; }
         }
 
         public PhoneInfo(string name, string phoneNumber)
@@ -42,52 +38,77 @@ namespace ConsolePhoneBook
             this.birth = birth;
         }
 
-        public virtual void ShowPhoneInfo()//정보 출력, 상속시켜서 학교,회사명 등 넣기
+        public virtual void ShowPhoneInfo()
         {
+            Console.Write("name: " + this.name);
+            Console.Write("\t phone: " + this.phoneNumber);
             if (birth != null)
-                Console.WriteLine($"이름: {this.name} \t 번호: {this.phoneNumber} \t 생일: {this.birth}");
-            else
-                Console.WriteLine($"이름: {this.name} \t 번호: {this.phoneNumber}");
+                Console.Write("\t birth: " + this.birth);
         }
-        //ToString()를 override해서 PhoneManager에서 사용해보기
+
+        public override string ToString()
+        {
+            return $"name:{name}\t phone:{phoneNumber}\t birth:{birth}";
+        }
+
+        public int CompareTo(object obj)
+        {
+            PhoneInfo other = (PhoneInfo)obj;
+            return this.name.CompareTo(other.name);
+
+            //if (this.name.CompareTo(other.name) == 1)
+            //    return 1;
+            //else if (this.name.CompareTo(other.name) == -1)
+            //    return -1;
+            //else
+            //    return 0;
+        }
     }
 
     public class PhoneUnivInfo : PhoneInfo
     {
-        public string major;
-        public string Major { get; }
+        string major;
+        int year;
 
-        public int year;
-        public int Year { get; }
-
-
-        public PhoneUnivInfo(string name, string phoneNumber, string birth, string major, int year) : base(name, phoneNumber, birth)
+        public PhoneUnivInfo(string name, string phonenumber, string birth, string major, int year)
+            : base(name, phonenumber, birth)
         {
-            this.major = major; //필수
-            this.year = year; //필수
+            this.major = major;
+            this.year = year;
         }
 
-
-        //showphoneinfo 오버라이딩
         public override void ShowPhoneInfo()
         {
-            Console.WriteLine($"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 학과: {major} \t 학년: {year}");
+            base.ShowPhoneInfo();
+            Console.Write($"major:{major}\t year:{year}");
+        }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}\t major:{major}\t year:{year}";
         }
     }
 
     public class PhoneCompanyInfo : PhoneInfo
     {
         string company;
-        public PhoneCompanyInfo(string name, string phoneNumber, string birth, string company) : base( name, phoneNumber, birth)
+
+        public PhoneCompanyInfo(string name, string phonenumber, string birth, string company)
+                               : base(name, phonenumber, birth)
         {
             this.company = company;
         }
 
-        public string Company { get; set; }
-
         public override void ShowPhoneInfo()
         {
-            Console.WriteLine($"이름: {Name} \t 번호: {PhoneNumber} \t 생일: {Birth} \t 회사: {company}");
+            base.ShowPhoneInfo();
+            Console.Write($"company:{company}");
+        }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}\t company:{company}";
         }
     }
+
 }
