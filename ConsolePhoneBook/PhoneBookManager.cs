@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ConsolePhoneBook
 {
@@ -38,6 +40,33 @@ namespace ConsolePhoneBook
             Console.WriteLine("---------------------------------------------------------");
             Console.Write("선택: ");
         }
+
+        //36.7
+        BinaryFormatter serializer = new BinaryFormatter();
+        public void Load()
+        {
+            PhoneInfo[] newinfo = new PhoneInfo[1];
+            if (File.Exists("list.bin"))
+            {
+                FileStream fs = new FileStream("list.bin", FileMode.Open);
+                newinfo = (PhoneInfo[])serializer.Deserialize(fs);
+                curCnt = newinfo.Length;
+                Array.Copy(newinfo, infoStorage, curCnt);
+                Console.WriteLine("로드 성공");
+                fs.Close();
+            }
+        }
+
+        public void Save()
+        {
+            PhoneInfo[] infos = new PhoneInfo[curCnt];
+            Array.Copy(infoStorage, infos, curCnt);
+            FileStream fs = new FileStream("list.bin", FileMode.Create);
+            serializer.Serialize(fs, infos);
+            Console.WriteLine("저장 성공");
+            fs.Close();
+        }
+
 
         public void InputData()
         {

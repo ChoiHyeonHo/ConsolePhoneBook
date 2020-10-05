@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConsolePhoneBook
 {
+    [Serializable]
     public class PhoneInfo : IComparable
     {
         string name;   //필수
@@ -65,6 +66,7 @@ namespace ConsolePhoneBook
         }
     }
 
+    [Serializable]
     public class PhoneUnivInfo : PhoneInfo
     {
         string major;
@@ -89,6 +91,7 @@ namespace ConsolePhoneBook
         }
     }
 
+    [Serializable]
     public class PhoneCompanyInfo : PhoneInfo
     {
         string company;
