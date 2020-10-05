@@ -45,24 +45,27 @@ namespace ConsolePhoneBook
         BinaryFormatter serializer = new BinaryFormatter();
         public void Load()
         {
-            PhoneInfo[] newinfo = new PhoneInfo[1];
+            //PhoneInfo[] newinfo = new PhoneInfo[1];
             if (File.Exists("list.bin"))
             {
-                FileStream fs = new FileStream("list.bin", FileMode.Open);
-                newinfo = (PhoneInfo[])serializer.Deserialize(fs);
-                curCnt = newinfo.Length;
-                Array.Copy(newinfo, infoStorage, curCnt);
+                FileStream fs = new FileStream("list.bin", FileMode.OpenOrCreate);
+                infoStorage = (HashSet<PhoneInfo>)serializer.Deserialize(fs);
+                //curCnt = newinfo.Length;
+                //Array.Copy(newinfo, infoStorage, curCnt);
                 Console.WriteLine("로드 성공");
                 fs.Close();
             }
         }
+        // 본래 있던 파일은  PhoneInfo[] 이기때문에 HashSet<PhoneInfo> 변환 x 본래의 파일을 지우고
+        // 삭제된 파일에 값이없으니 오류 null
+        // load시 파일의 nu.ll 값이 있는지 없는지확인휴 값이 있으면 실행  fs.Length ==0 
 
         public void Save()
         {
-            PhoneInfo[] infos = new PhoneInfo[curCnt];
-            Array.Copy(infoStorage, infos, curCnt);
+            //PhoneInfo[] infos = new PhoneInfo[curCnt];
+            //Array.Copy(infoStorage, infos, curCnt);
             FileStream fs = new FileStream("list.bin", FileMode.Create);
-            serializer.Serialize(fs, infos);
+            serializer.Serialize(fs, infoStorage);
             Console.WriteLine("저장 성공");
             fs.Close();
         }
