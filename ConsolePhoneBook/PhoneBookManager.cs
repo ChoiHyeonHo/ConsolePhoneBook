@@ -18,7 +18,6 @@ namespace ConsolePhoneBook
 
         public static PhoneBookManager CreateInstance()
         {
-
             if (instance == null)
             {
                 instance = new PhoneBookManager();
@@ -41,7 +40,6 @@ namespace ConsolePhoneBook
             Console.Write("선택: ");
         }
 
-        //36.7
         BinaryFormatter serializer = new BinaryFormatter();
         public void Load()
         {
@@ -357,7 +355,7 @@ namespace ConsolePhoneBook
         private int SearchName(string name)
         {
             PhoneInfo[] copyInfo = infoStorage.ToArray<PhoneInfo>();
-            for (int i = 0; i < copyInfo.Length ; i++)
+            for (int i = 0; i < copyInfo.Length; i++)
             {
                 if (copyInfo[i].Name.Replace(" ", "").CompareTo(name) == 0)
                 {
